@@ -12,19 +12,19 @@ This is a simple example of a WebSocket echo app using the Gin framework in Go. 
 
 1. Clone the repository:
 
-  git clone https://github.com/royyanwibisono/testwebsocket.git
+```git clone https://github.com/royyanwibisono/testwebsocket.git```
 
 
 2. Install the Gin framework:
 
-  go get -u github.com/gin-gonic/gin
+```go get -u github.com/gin-gonic/gin```
 
 
 ## Usage
 
 1. Start the server:
 
-  go run main.go
+```go run main.go```
 
 2. Open `http://localhost:7000` in your browser.
 
