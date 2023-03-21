@@ -4,14 +4,15 @@
 	<title>WebSocket Echo Test</title>
 </head>
 <body>
-	<h1>WebSocket Echo Example</h1>
+	<h1>WebSocket Echo Test</h1>
 	<input type="text" id="message" placeholder="Type a message...">
 	<button onclick="sendMessage()">Send</button>
 	<hr>
 	<div id="output"></div>
 
 	<script>
-		var socket = new WebSocket("ws://" + window.location.host + "/ws");
+    let secure = window.location.protocol.includes('https') ? 's':'';
+		var socket = new WebSocket("ws"+secure+"://" + window.location.host + "/ws");
 		
 		socket.onopen = function(event) {
 			console.log("WebSocket connected!");

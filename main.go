@@ -1,11 +1,25 @@
 package main
 
 import (
+	"flag"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
+
+var (
+	certPath string
+	keyPath  string
+	address  string
+)
+
+func init() {
+	flag.StringVar(&certPath, "cert", "", "path to SSL/TLS certificate file")
+	flag.StringVar(&keyPath, "key", "", "path to SSL/TLS private key file")
+	flag.StringVar(&address, "a", ":7000", "address to use")
+}
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -16,11 +30,13 @@ var upgrader = websocket.Upgrader{
 }
 
 func main() {
+	flag.Parse()
+
 	router := gin.Default()
 
 	// Serve HTML page to trigger connection
 	router.GET("/", func(c *gin.Context) {
-		http.ServeFile(c.Writer, c.Request, "index.html")
+		c.File("index.html")
 	})
 
 	// Handle WebSocket connections
@@ -45,5 +61,16 @@ func main() {
 		}
 	})
 
-	router.Run(":7000")
+	if certPath == "" || keyPath == "" {
+		log.Println("Warning: SSL/TLS certificate and/or private key file not provided. Running server unsecured.")
+		err := router.Run(address)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		err := router.RunTLS(address, certPath, keyPath)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
