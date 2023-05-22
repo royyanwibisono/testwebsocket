@@ -43,20 +43,29 @@ func main() {
 	router.GET("/ws", func(c *gin.Context) {
 		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {
-			panic(err)
+			// panic(err)
+			log.Printf("%s, error while Upgrading websocket connection\n", err.Error())
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
 		}
 
 		for {
 			// Read message from client
 			messageType, p, err := conn.ReadMessage()
 			if err != nil {
-				panic(err)
+				// panic(err)
+				log.Printf("%s, error while reading message\n", err.Error())
+				c.AbortWithError(http.StatusInternalServerError, err)
+				break
 			}
 
 			// Echo message back to client
 			err = conn.WriteMessage(messageType, p)
 			if err != nil {
-				panic(err)
+				// panic(err)
+				log.Printf("%s, error while writing message\n", err.Error())
+				c.AbortWithError(http.StatusInternalServerError, err)
+				break
 			}
 		}
 	})
